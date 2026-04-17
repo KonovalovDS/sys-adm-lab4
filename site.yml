@@ -1,0 +1,48 @@
+- hosts: lab4
+  become: yes
+
+  tasks:
+
+  - name: install packages
+    apt:
+      name:
+        - git
+        - curl
+        - python3
+      state: present
+      update_cache: yes
+
+  - name: create service directory
+    file:
+      path: /opt/lab4-service/html
+      state: directory
+      owner: www-data
+      group: www-data
+      mode: '0755'
+      recurse: yes
+
+  - name: deploy index
+    copy:
+      dest: /opt/lab4-service/html/index.html
+      content: "<h1>Konovalov</h1>"
+
+  - name: copy service script
+    copy:
+      src: service.sh
+      dest: /opt/lab4-service/service.sh
+      mode: '0755'
+
+  - name: copy unit file
+    copy:
+      src: lab4-service.service
+      dest: /etc/systemd/system/lab4-service.service
+
+  - name: reload systemd
+    systemd:
+      daemon_reload: yes
+
+  - name: enable service
+    systemd:
+      name: lab4-service
+      enabled: yes
+      state: started
