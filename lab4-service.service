@@ -1,0 +1,13 @@
+[Unit]
+Description=HTTP Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/lab4-service
+ExecStart=/opt/lab4-service/service.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
